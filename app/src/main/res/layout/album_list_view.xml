@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingTop="7.5dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="7.5dp">
+
+    <TextView
+        android:id="@+id/photoName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="32dp"
+        android:paddingLeft="2dp"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/deletePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="right"
+        android:layout_marginEnd="19dp"
+        android:backgroundTint="#FF0000"
+        android:text="Delete" />
+
+    <Button
+        android:id="@+id/editBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="133dp"
+        android:backgroundTint="#B8B8B8"
+        android:text="Edit" />
+</RelativeLayout>
