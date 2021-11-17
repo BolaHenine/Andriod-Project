@@ -31,7 +31,11 @@ public class Album implements Serializable {
         } else {
             photos.add(img);
         }
+    }
 
+    @Override
+    public String toString() {
+        return name;
     }
 
 

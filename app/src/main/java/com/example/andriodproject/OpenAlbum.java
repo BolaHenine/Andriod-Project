@@ -2,6 +2,7 @@ package com.example.andriodproject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,11 +20,20 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +57,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.zip.Inflater;
 
 public class OpenAlbum extends AppCompatActivity {
     private static final int GET_FROM_GALLERY = 1;
@@ -211,13 +224,14 @@ public class OpenAlbum extends AppCompatActivity {
             public TextView nameTextView;
             public Button deletebtn;
             public ImageView photoView;
+            public TextView buttonViewOption;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 nameTextView = itemView.findViewById(R.id.photoName);
                 deletebtn = itemView.findViewById(R.id.deletePhoto);
                 photoView = itemView.findViewById(R.id.imageView);
-
+                buttonViewOption = (TextView) itemView.findViewById(R.id.textViewOptions);
             }
 
         }
@@ -269,6 +283,36 @@ public class OpenAlbum extends AppCompatActivity {
                 create(OpenAlbum.this, "storage.json", json);
             });
 
+
+            holder.buttonViewOption.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    //creating a popup menu
+                    PopupMenu popup = new PopupMenu(OpenAlbum.this, holder.buttonViewOption);
+                    //inflating menu from xml resource
+                    popup.inflate(R.menu.options_menu);
+                    //adding click listener
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.move:
+                                    movePhoto(position);
+                                    break;
+                                case R.id.edit:
+                                    editName(position);
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    //displaying the popup
+                    popup.show();
+
+                }
+            });
+
             holder.itemView.setOnClickListener(view -> openPhoto(position));
         }
 
@@ -276,6 +320,98 @@ public class OpenAlbum extends AppCompatActivity {
         public int getItemCount() {
             return PhotoList.size();
         }
+
+
+    }
+
+    public void editName(int photoPosition) {
+
+        AlertDialog.Builder editAlert = new AlertDialog.Builder(OpenAlbum.this);
+        final EditText newPhotoName = new EditText(OpenAlbum.this);
+        newPhotoName.setHint("Photo Name");
+        editAlert.setTitle("Please Enter The New Photo Name");
+        editAlert.setView(newPhotoName);
+
+        editAlert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                albumList.get(pos).getPhotos().get(photoPosition).setName(newPhotoName.getText().toString());
+                adapter.notifyDataSetChanged();
+
+                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gson = new Gson();
+                String json = gson.toJson(albumList);
+                prefsEditor.putString("albumList", json);
+                prefsEditor.commit();
+                create(OpenAlbum.this, "storage.json", json);
+            }
+        });
+
+        editAlert.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                Context context = getApplicationContext();
+                CharSequence text = "The Photo name will not be changed";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
+        editAlert.show();
+
+
+    }
+
+    public void movePhoto(int photoPostion) {
+
+
+        List<Album> spinnerList = albumList.stream()
+                .filter(album -> !album.getName().equals(albumList.get(pos).getName()))
+                .collect(Collectors.toList());
+
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(OpenAlbum.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+        mBuilder.setTitle("Select an Album");
+        Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);
+        ArrayAdapter adp = new ArrayAdapter(OpenAlbum.this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adp);
+
+
+        mBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Album album = (Album) mSpinner.getSelectedItem();
+                album.addPhoto(albumList.get(pos).getPhotos().get(photoPostion));
+                albumList.get(pos).getPhotos().remove(photoPostion);
+                adapter.notifyDataSetChanged();
+
+                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gson = new Gson();
+                String json = gson.toJson(albumList);
+                prefsEditor.putString("albumList", json);
+                prefsEditor.commit();
+                create(OpenAlbum.this, "storage.json", json);
+            }
+        });
+
+        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Context context = getApplicationContext();
+                CharSequence text = "The Photo will not be moved";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
+
+
+        mBuilder.setView(mView);
+
+        AlertDialog d = mBuilder.create();
+
+        d.show();
 
 
     }

@@ -20,5 +20,9 @@ public class Photo implements Serializable {
         return this.photoString;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
 }
