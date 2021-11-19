@@ -2,7 +2,6 @@ package com.example.andriodproject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,22 +22,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,9 +50,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.zip.Inflater;
 
 public class OpenAlbum extends AppCompatActivity {
     private static final int GET_FROM_GALLERY = 1;
@@ -362,7 +353,7 @@ public class OpenAlbum extends AppCompatActivity {
 
     }
 
-    public void movePhoto(int photoPostion) {
+    public void movePhoto(int photoPosition) {
 
 
         List<Album> spinnerList = albumList.stream()
@@ -382,8 +373,8 @@ public class OpenAlbum extends AppCompatActivity {
         mBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Album album = (Album) mSpinner.getSelectedItem();
-                album.addPhoto(albumList.get(pos).getPhotos().get(photoPostion));
-                albumList.get(pos).getPhotos().remove(photoPostion);
+                album.addPhoto(albumList.get(pos).getPhotos().get(photoPosition));
+                albumList.get(pos).getPhotos().remove(photoPosition);
                 adapter.notifyDataSetChanged();
 
                 SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);

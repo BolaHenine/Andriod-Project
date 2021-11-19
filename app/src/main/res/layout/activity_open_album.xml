@@ -28,8 +28,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="13dp"
         android:onClick="uploadPhoto"
         app:srcCompat="@android:drawable/ic_input_add"
         tools:ignore="SpeakableTextPresentCheck" />

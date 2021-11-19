@@ -1,11 +1,13 @@
 package com.example.andriodproject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Photo implements Serializable {
     private String photoString;
     private String name;
-    private String tags;
+    private ArrayList<String> pTag;
+    private ArrayList<String> lTag;
 
     public Photo(String name, String photoString) {
         this.name = name;
@@ -22,6 +24,22 @@ public class Photo implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<String> getPTag() {
+        return this.pTag;
+    }
+
+    public ArrayList<String> getlTag() {
+        return this.lTag;
+    }
+
+    public void addPTag(String tagName) {
+        pTag.add(tagName);
+    }
+
+    public void addLTag(String tagName) {
+        lTag.add(tagName);
     }
 
 
