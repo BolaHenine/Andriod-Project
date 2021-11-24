@@ -10,6 +10,8 @@
         <entry key="app/src/main/res/drawable/logo_background.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_open_album.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_open_photo.xml" value="0.2978073120117188" />
+        <entry key="app/src/main/res/layout/activity_photo_list.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/album_list_view.xml" value="0.26927083333333335" />
         <entry key="app/src/main/res/layout/album_photos_list_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/alert.xml" value="0.15217391304347827" />
@@ -17,6 +19,8 @@
         <entry key="app/src/main/res/layout/custom_ripple.xml" value="0.25364583333333335" />
         <entry key="app/src/main/res/layout/dialog_spinner.xml" value="0.22" />
         <entry key="app/src/main/res/layout/move_alert.xml" value="0.15217391304347827" />
+        <entry key="app/src/main/res/layout/open_photo.xml" value="0.3415492957746479" />
+        <entry key="app/src/main/res/layout/photo_list.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/menu/options_menu.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.27760416666666665" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24635416666666668" />

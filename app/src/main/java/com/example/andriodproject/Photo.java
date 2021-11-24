@@ -8,6 +8,7 @@ public class Photo implements Serializable {
     private String name;
     private ArrayList<String> pTag;
     private ArrayList<String> lTag;
+    private ArrayList<Photo> photos;
 
     public Photo(String name, String photoString) {
         this.name = name;
@@ -28,6 +29,10 @@ public class Photo implements Serializable {
 
     public ArrayList<String> getPTag() {
         return this.pTag;
+    }
+
+    public ArrayList<Photo> getPhotos() {
+        return this.photos;
     }
 
     public ArrayList<String> getlTag() {
