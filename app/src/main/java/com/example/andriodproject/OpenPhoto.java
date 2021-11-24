@@ -69,6 +69,8 @@ public class OpenPhoto extends AppCompatActivity {
     private Photo photo;
     private int albumpos;
     private int photopos;
+    private ImageView imageview;
+    private Bitmap map;
     Type listType = new TypeToken<ArrayList<Album>>() {
     }.getType();
 
@@ -87,7 +89,9 @@ public class OpenPhoto extends AppCompatActivity {
         String albumsJson = read(this, "storage.json");
         albumList = new Gson().fromJson(albumsJson, listType);
         setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());
-
+        imageview = findViewById(R.id.imageView2);
+        map = StringToBitMap(albumList.get(albumpos).getPhotos().get(photopos).getPhotoString());
+        imageview.setImageBitmap(map);
         if (photosList == null) {
             photosList = new ArrayList<Photo>();
             photosList = albumList.get(albumpos).getPhotos().get(photopos).getPhotos();
@@ -97,6 +101,28 @@ public class OpenPhoto extends AppCompatActivity {
 
     }
 
+
+    public void goBackPhoto(View view) {
+        if(photopos>0)
+    {
+        photopos=photopos-1;
+
+        }
+        setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());
+        map = StringToBitMap(albumList.get(albumpos).getPhotos().get(photopos).getPhotoString());
+        imageview.setImageBitmap(map);
+    }
+
+    public void goToNextPhoto(View view) {
+        if(photopos<albumList.get(albumpos).getPhotos().size()-1)
+        {
+            photopos=photopos+1;
+
+        }
+        setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());
+        map = StringToBitMap(albumList.get(albumpos).getPhotos().get(photopos).getPhotoString());
+        imageview.setImageBitmap(map);
+    }
 
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
