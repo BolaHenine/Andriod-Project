@@ -58,7 +58,7 @@ public class OpenAlbum extends AppCompatActivity {
     private PhotoAdapter adapter;
     private ArrayList<Album> albumList;
     private int pos;
-    public static final String ALBUM_POS="album_pos";
+    public static final String ALBUM_POS = "album_pos";
     public static final String PHOTO_POS = "photo_pos";
     Type listType = new TypeToken<ArrayList<Album>>() {
     }.getType();
@@ -68,6 +68,8 @@ public class OpenAlbum extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_album);
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -117,9 +119,9 @@ public class OpenAlbum extends AppCompatActivity {
 
     }
 
-    public void openPhoto(int photoposition,int albumposition) {
+    public void openPhoto(int photoposition, int albumposition) {
 
-        Intent intent = new Intent(this, OpenAlbum.class);
+        Intent intent = new Intent(this, OpenPhoto.class);
         String albumsJson = read(this, "storage.json");
         Bundle bundle = new Bundle();
         bundle.putString(ALBUM_POS, String.valueOf(albumposition));
@@ -314,7 +316,7 @@ public class OpenAlbum extends AppCompatActivity {
                 }
             });
 
-            holder.itemView.setOnClickListener(view -> openPhoto(position,pos));
+            holder.itemView.setOnClickListener(view -> openPhoto(position, pos));
         }
 
         @Override

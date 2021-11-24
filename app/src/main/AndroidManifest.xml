@@ -11,7 +11,12 @@
         android:theme="@style/Theme.AndriodProject">
         <activity
             android:name=".OpenPhoto"
-            android:exported="false" />
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.andriodproject.OpenPhoto" />
+            />
+        </activity>
         <activity
             android:name=".OpenAlbum"
             android:exported="false"

@@ -5,7 +5,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -76,14 +78,12 @@ public class OpenPhoto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.open_photo);
 
-        RecyclerView photoList = findViewById(R.id.photoList);
-
 
         Bundle bundle = getIntent().getExtras();
         albumpos = Integer.parseInt(bundle.getString(MainActivity.ALBUM_POS));
         photopos = Integer.parseInt(bundle.getString(OpenAlbum.PHOTO_POS));
-        Log.w("test",String.valueOf(albumpos));
-        Log.w("test",String.valueOf(photopos));
+        Log.w("test", String.valueOf(albumpos));
+        Log.w("test", String.valueOf(photopos));
         String albumsJson = read(this, "storage.json");
         albumList = new Gson().fromJson(albumsJson, listType);
         setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());
@@ -95,13 +95,7 @@ public class OpenPhoto extends AppCompatActivity {
             photosList = albumList.get(albumpos).getPhotos().get(photopos).getPhotos();
         }
 
-        photoList.setLayoutManager(new LinearLayoutManager(this));
-
     }
-
-
-
-
 
 
     public String BitMapToString(Bitmap bitmap) {
@@ -111,6 +105,7 @@ public class OpenPhoto extends AppCompatActivity {
         String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
     }
+
     public Bitmap StringToBitMap(String encodedString) {
         try {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
