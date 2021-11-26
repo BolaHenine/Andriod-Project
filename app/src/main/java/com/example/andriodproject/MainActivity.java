@@ -15,11 +15,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
     AlbumsAdapter adapter;
     Gson gson;
 
+    private ArrayAdapter<String> autoComAdapter;
+    private ArrayList<String> autoCom = new ArrayList<String>();
+    private AutoCompleteTextView tagValue;
+
+
     Type listType = new TypeToken<ArrayList<Album>>() {
     }.getType();
 
@@ -56,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         if (isFilePresent(this, "storage.json")) {
             String albumsJson = read(this, "storage.json");
@@ -92,6 +104,125 @@ public class MainActivity extends AppCompatActivity {
 
         itemTouchHelper.attachToRecyclerView(recAlbumList);
 
+
+        albumList.get(0).getPhotos().get(0).addPTag("Bola");
+        albumList.get(1).getPhotos().get(0).addPTag("Test");
+
+        albumList.get(0).getPhotos().get(0).addLTag("New York");
+        albumList.get(1).getPhotos().get(0).addLTag("New Jersey");
+
+
+//        for (int i = 0; i < albumList.size(); i++) {
+//            for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
+//                autoCom.addAll(albumList.get(i).getPhotos().get(j).getlTag());
+//                autoCom.addAll(albumList.get(i).getPhotos().get(j).getPTag());
+//
+//            }
+//        }
+
+//        View mView = getLayoutInflater().inflate(R.layout.search_alert, null);
+//
+//        AutoCompleteTextView tagValue = (AutoCompleteTextView) mView.findViewById(R.id.tagValue);
+//
+//
+//        autoComAdapter = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_dropdown_item_1line, autoCom);
+//
+//
+//        tagValue.setAdapter(autoComAdapter);
+
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.searchButton:
+                search();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void search() {
+
+        List<String> spinnerList = new ArrayList<String>();
+        spinnerList.add("Person");
+        spinnerList.add("Location");
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.search_alert, null);
+        mBuilder.setTitle("Select Tag Type");
+        tagValue = (AutoCompleteTextView) mView.findViewById(R.id.tagValue);
+        Spinner mSpinner = (Spinner) mView.findViewById(R.id.tagType);
+        ArrayAdapter adp = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adp);
+
+        autoComAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, autoCom);
+
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                Log.w("test", String.valueOf(position));
+                autoComFill(position);
+
+
+                tagValue.setAdapter(autoComAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        mBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Log.w("test", tagValue.getText().toString() + " " + mSpinner.getSelectedItem());
+            }
+        });
+
+        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Context context = getApplicationContext();
+                CharSequence text = "The Photo will not be moved";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
+
+        mBuilder.setView(mView);
+
+        AlertDialog d = mBuilder.create();
+
+        d.show();
+    }
+
+    public void autoComFill(int position) {
+        autoCom.clear();
+        Log.w("test", String.valueOf(position));
+        if (position == 0) {
+            for (int i = 0; i < albumList.size(); i++) {
+                for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
+                    autoCom.addAll(albumList.get(i).getPhotos().get(j).getPTag());
+                }
+            }
+        } else {
+            for (int i = 0; i < albumList.size(); i++) {
+                for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
+                    autoCom.addAll(albumList.get(i).getPhotos().get(j).getlTag());
+                }
+            }
+        }
+        autoComAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, autoCom);
 
     }
 

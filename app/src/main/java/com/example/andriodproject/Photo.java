@@ -42,10 +42,16 @@ public class Photo implements Serializable {
     }
 
     public void addPTag(String tagName) {
+        if (pTag == null) {
+            pTag = new ArrayList<String>();
+        }
         pTag.add(tagName);
     }
 
     public void addLTag(String tagName) {
+        if (lTag == null) {
+            lTag = new ArrayList<String>();
+        }
         lTag.add(tagName);
     }
 
