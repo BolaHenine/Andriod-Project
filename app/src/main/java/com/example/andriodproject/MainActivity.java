@@ -12,7 +12,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,7 +27,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> autoComAdapter;
     private ArrayList<String> autoCom = new ArrayList<String>();
     private AutoCompleteTextView tagValue;
+    private RecyclerView recAlbumList;
+    private PhotoAdapter photoAdapter;
+    private RecyclerView searchList;
 
 
     Type listType = new TypeToken<ArrayList<Album>>() {
@@ -76,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             albumList = new ArrayList<Album>();
         }
 
-        RecyclerView recAlbumList = (RecyclerView) findViewById(R.id.albumRecList);
+        recAlbumList = (RecyclerView) findViewById(R.id.albumRecList);
         adapter = new AlbumsAdapter(albumList);
         recAlbumList.setAdapter(adapter);
         recAlbumList.setLayoutManager(new LinearLayoutManager(this));
@@ -184,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
         mBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Log.w("test", tagValue.getText().toString() + " " + mSpinner.getSelectedItem());
+                showSearchResults(tagValue.getText().toString(), mSpinner.getSelectedItem().toString());
             }
         });
 
@@ -203,6 +211,53 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog d = mBuilder.create();
 
         d.show();
+    }
+
+    public void showSearchResults(String val, String type) {
+        recAlbumList.setVisibility(View.INVISIBLE);
+        ArrayList<Photo> searchResults = new ArrayList<Photo>();
+        if (type.equals("Person")) {
+            for (int i = 0; i < albumList.size(); i++) {
+                for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
+                    if (albumList.get(i).getPhotos().get(j).getPTag().contains(val)) {
+                        searchResults.add(albumList.get(i).getPhotos().get(j));
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < albumList.size(); i++) {
+                for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
+                    if (albumList.get(i).getPhotos().get(j).getlTag().contains(val)) {
+                        searchResults.add(albumList.get(i).getPhotos().get(j));
+                    }
+                }
+            }
+        }
+        if (searchResults.size() == 0) {
+            Context context = getApplicationContext();
+            CharSequence text = "Nothing matches the Search Results";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+        photoAdapter = new PhotoAdapter(searchResults);
+        searchList = (RecyclerView) findViewById(R.id.searchList);
+        searchList.setVisibility(View.VISIBLE);
+        searchList.setAdapter(photoAdapter);
+        searchList.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (recAlbumList.getVisibility() == View.INVISIBLE) {
+            recAlbumList.setVisibility(View.VISIBLE);
+            searchList.setVisibility(View.INVISIBLE);
+        } else {
+            Intent setIntent = new Intent(Intent.ACTION_MAIN);
+            setIntent.addCategory(Intent.CATEGORY_HOME);
+            setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(setIntent);
+        }
     }
 
     public void autoComFill(int position) {
@@ -445,5 +500,84 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+    public class PhotoAdapter extends
+            RecyclerView.Adapter<MainActivity.PhotoAdapter.ViewHolder> {
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            public TextView nameTextView;
+            public ImageView photoView;
+            public Button deletebtn;
+            public TextView buttonViewOption;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                nameTextView = itemView.findViewById(R.id.photoName);
+                photoView = itemView.findViewById(R.id.imageView);
+                deletebtn = itemView.findViewById(R.id.deletePhoto);
+                buttonViewOption = (TextView) itemView.findViewById(R.id.textViewOptions);
+            }
+
+        }
+
+        private List<Photo> PhotoList;
+
+        public PhotoAdapter(List<Photo> PhotoList) {
+            if (PhotoList == null) {
+                PhotoList = new ArrayList<Photo>();
+                this.PhotoList = PhotoList;
+            }
+            this.PhotoList = PhotoList;
+
+        }
+
+        @Override
+        public MainActivity.PhotoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            Context context = parent.getContext();
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View contactView = inflater.inflate(R.layout.album_photos_list_view, parent, false);
+            MainActivity.PhotoAdapter.ViewHolder viewHolder = new ViewHolder(contactView);
+            return viewHolder;
+        }
+
+        // Involves populating data into the item through holder
+        @Override
+        public void onBindViewHolder(MainActivity.PhotoAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+            Photo photo = PhotoList.get(position);
+            Bitmap img = StringToBitMap(photo.getPhotoString());
+
+            TextView textView = holder.nameTextView;
+            ImageView photoView = holder.photoView;
+            Button deleteBtn = holder.deletebtn;
+            TextView options = holder.buttonViewOption;
+
+            deleteBtn.setVisibility(View.INVISIBLE);
+            options.setVisibility(View.INVISIBLE);
+
+            photoView.setImageBitmap(img);
+            textView.setText(photo.getName());
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return PhotoList.size();
+        }
+
+
+    }
+
+    public Bitmap StringToBitMap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
 
 }
