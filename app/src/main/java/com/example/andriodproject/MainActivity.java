@@ -113,11 +113,11 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recAlbumList);
 
 
-        albumList.get(0).getPhotos().get(0).addPTag("Bola");
-        albumList.get(1).getPhotos().get(0).addPTag("Test");
-
-        albumList.get(0).getPhotos().get(0).addLTag("New York");
-        albumList.get(1).getPhotos().get(0).addLTag("New Jersey");
+//        albumList.get(0).getPhotos().get(0).addPTag("Bola");
+//        albumList.get(1).getPhotos().get(0).addPTag("Test");
+//
+//        albumList.get(0).getPhotos().get(0).addLTag("New York");
+//        albumList.get(1).getPhotos().get(0).addLTag("New Jersey");
 
 
 //        for (int i = 0; i < albumList.size(); i++) {
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
-                    if (albumList.get(i).getPhotos().get(j).getlTag().contains(val)) {
+                    if (albumList.get(i).getPhotos().get(j).getLTag().contains(val)) {
                         searchResults.add(albumList.get(i).getPhotos().get(j));
                     }
                 }
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
-                    autoCom.addAll(albumList.get(i).getPhotos().get(j).getlTag());
+                    autoCom.addAll(albumList.get(i).getPhotos().get(j).getLTag());
                 }
             }
         }

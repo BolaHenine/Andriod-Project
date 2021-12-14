@@ -1,5 +1,7 @@
 package com.example.andriodproject;
 
+import android.widget.EditText;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -37,7 +39,7 @@ public class Photo implements Serializable {
     }
 
 
-    public ArrayList<String> getlTag() {
+    public ArrayList<String> getLTag() {
         return this.lTag;
     }
 
@@ -45,14 +47,27 @@ public class Photo implements Serializable {
         if (pTag == null) {
             pTag = new ArrayList<String>();
         }
-        pTag.add(tagName);
+        if(pTag==null)
+        {
+            pTag = new ArrayList<String>();
+        }
+    else {
+            pTag.add(tagName);
+        }
     }
 
     public void addLTag(String tagName) {
         if (lTag == null) {
             lTag = new ArrayList<String>();
         }
-        lTag.add(tagName);
+
+        if(lTag==null)
+        {
+            lTag = new ArrayList<String>();
+        }
+        else {
+            lTag.add(tagName);
+        }
     }
 
 

@@ -3,62 +3,122 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+>
+
+    <ListView
+        android:id="@+id/lTagName"
+        android:layout_width="134dp"
+        android:layout_height="190dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="265dp"
+        android:layout_marginBottom="58dp" />
 
     <Button
         android:id="@+id/leftButton"
-        android:layout_width="58dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="62dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="11dp"
-        android:layout_marginEnd="342dp"
-        android:layout_marginBottom="389dp"
-        android:text="left"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="326dp"
+        android:layout_marginBottom="457dp"
         android:onClick="goBackPhoto"
+        android:text="&lt;"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="266dp"
-        android:layout_height="235dp"
+        android:layout_width="247dp"
+        android:layout_height="229dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginStart="82dp"
+        android:layout_marginTop="24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
         android:id="@+id/rightButton"
-        android:layout_width="58dp"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="62dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="389dp"
-        android:text="right"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="454dp"
         android:onClick="goToNextPhoto"
+        android:text="&gt;"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <TextView
-        android:id="@+id/tagName"
-        android:layout_width="76dp"
-        android:layout_height="35dp"
+    <Button
+        android:id="@+id/deleteperson"
+        android:layout_width="156dp"
+        android:layout_height="55dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="167dp"
-        android:layout_marginBottom="229dp"
-        android:text="TextView" />
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="271dp"
+        android:layout_marginBottom="0dp"
+        android:onClick="deleteTag"
+        android:text="Delete Person" />
+
+    <EditText
+        android:id="@+id/inputpTag"
+        android:layout_width="187dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginBottom="276dp"
+        android:hint="Input Person Tag"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/inputlTag"
+        android:layout_width="187dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="276dp"
+        android:hint="Input Location Tag"
+        android:inputType="text" />
 
     <Button
-        android:id="@+id/deleteTag"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="176dp"
-        android:text="Delete Tag" />
+        android:layout_marginBottom="220dp"
+        android:onClick="insertTag"
+        android:text="Add Tag" />
+
+
+    <Button
+        android:id="@+id/deletelocation"
+        android:layout_width="156dp"
+        android:layout_height="55dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="251dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="0dp"
+        android:text="Delete Location" />
+
+    <ListView
+        android:id="@+id/pTagName"
+        android:layout_width="134dp"
+        android:layout_height="190dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginBottom="56dp" />
+
 </RelativeLayout>
