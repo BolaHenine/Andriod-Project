@@ -135,7 +135,6 @@ public class OpenPhoto extends AppCompatActivity {
             locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
         }
 
-        Log.w("test", String.valueOf(locationList == null));
 
         person = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, personList);
         pTag.setAdapter(person);
@@ -164,7 +163,25 @@ public class OpenPhoto extends AppCompatActivity {
     public void goBackPhoto(View view) {
         if (photopos > 0) {
             photopos = photopos - 1;
+            if (personList == null && albumList.get(albumpos).getPhotos().get(photopos).getPTag() == null) {
+                personList = new ArrayList<String>();
+                personList = albumList.get(albumpos).getPhotos().get(photopos).getPTag();
+            } else {
+                personList = albumList.get(albumpos).getPhotos().get(photopos).getPTag();
+            }
 
+            if (locationList == null && albumList.get(albumpos).getPhotos().get(photopos).getLTag() == null) {
+                locationList = new ArrayList<String>();
+                locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
+            } else {
+                locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
+            }
+
+            person = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, personList);
+            pTag.setAdapter(person);
+
+            location = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locationList);
+            lTag.setAdapter(location);
         }
         setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());
         map = StringToBitMap(albumList.get(albumpos).getPhotos().get(photopos).getPhotoString());
@@ -172,8 +189,28 @@ public class OpenPhoto extends AppCompatActivity {
     }
 
     public void goToNextPhoto(View view) {
+
         if (photopos < albumList.get(albumpos).getPhotos().size() - 1) {
             photopos = photopos + 1;
+            if (personList == null && albumList.get(albumpos).getPhotos().get(photopos).getPTag() == null) {
+                personList = new ArrayList<String>();
+                personList = albumList.get(albumpos).getPhotos().get(photopos).getPTag();
+            } else {
+                personList = albumList.get(albumpos).getPhotos().get(photopos).getPTag();
+            }
+
+            if (locationList == null && albumList.get(albumpos).getPhotos().get(photopos).getLTag() == null) {
+                locationList = new ArrayList<String>();
+                locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
+            } else {
+                locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
+            }
+
+            person = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, personList);
+            pTag.setAdapter(person);
+
+            location = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locationList);
+            lTag.setAdapter(location);
 
         }
         setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());

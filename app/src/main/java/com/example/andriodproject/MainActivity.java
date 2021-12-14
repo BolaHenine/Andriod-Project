@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                Log.w("test", String.valueOf(position));
+
                 autoComFill(position);
 
 
