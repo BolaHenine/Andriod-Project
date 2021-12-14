@@ -16,6 +16,8 @@ public class Photo implements Serializable {
     public Photo(String name, String photoString) {
         this.name = name;
         this.photoString = photoString;
+        pTag = new ArrayList<String>();
+        lTag = new ArrayList<String>();
     }
 
     public String getName() {
@@ -47,11 +49,9 @@ public class Photo implements Serializable {
         if (pTag == null) {
             pTag = new ArrayList<String>();
         }
-        if(pTag==null)
-        {
+        if (pTag == null) {
             pTag = new ArrayList<String>();
-        }
-    else {
+        } else {
             pTag.add(tagName);
         }
     }
@@ -61,11 +61,9 @@ public class Photo implements Serializable {
             lTag = new ArrayList<String>();
         }
 
-        if(lTag==null)
-        {
+        if (lTag == null) {
             lTag = new ArrayList<String>();
-        }
-        else {
+        } else {
             lTag.add(tagName);
         }
     }

@@ -67,8 +67,8 @@ public class OpenPhoto extends AppCompatActivity {
 
     private static final int GET_FROM_GALLERY = 1;
     private ArrayList<Photo> photosList = new ArrayList<Photo>();
-    private ArrayList<String> personList = new ArrayList<String>();
-    private ArrayList<String> locationList = new ArrayList<String>();
+    private ArrayList<String> personList;
+    private ArrayList<String> locationList;
     private ArrayList<Album> albumList;
     private ArrayAdapter<String> person;
     private ArrayAdapter<String> location;
@@ -84,6 +84,8 @@ public class OpenPhoto extends AppCompatActivity {
     private Button deletePerson;
     private Button deleteLocation;
     private Bitmap map;
+    private int ptagPositionDel;
+    private int ltagPositionDel;
     Type listType = new TypeToken<ArrayList<Album>>() {
     }.getType();
 
@@ -97,8 +99,6 @@ public class OpenPhoto extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         albumpos = Integer.parseInt(bundle.getString(MainActivity.ALBUM_POS));
         photopos = Integer.parseInt(bundle.getString(OpenAlbum.PHOTO_POS));
-        Log.w("test", String.valueOf(albumpos));
-        Log.w("test", String.valueOf(photopos));
 
         String albumsJson = read(this, "storage.json");
         albumList = new Gson().fromJson(albumsJson, listType);
@@ -107,14 +107,11 @@ public class OpenPhoto extends AppCompatActivity {
         ptagInput = findViewById(R.id.inputpTag);
         deletePerson = findViewById(R.id.deleteperson);
         deleteLocation = findViewById(R.id.deletelocation);
-        ltagInput= findViewById(R.id.inputlTag);
+        ltagInput = findViewById(R.id.inputlTag);
         pTag = findViewById(R.id.pTagName);
         lTag = findViewById(R.id.lTagName);
-//        ArrayList<String> test = new ArrayList<String>();
-//        test.add("hello");
-//        test.add("world");
-//        ArrayAdapter<String> person = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, test);
-//        pTag.setAdapter(person);
+
+
         map = StringToBitMap(albumList.get(albumpos).getPhotos().get(photopos).getPhotoString());
         imageview.setImageBitmap(map);
         if (photosList == null) {
@@ -123,28 +120,50 @@ public class OpenPhoto extends AppCompatActivity {
         } else {
             photosList = albumList.get(albumpos).getPhotos().get(photopos).getPhotos();
         }
-        if (personList == null) {
+
+        if (personList == null && albumList.get(albumpos).getPhotos().get(photopos).getPTag() == null) {
             personList = new ArrayList<String>();
             personList = albumList.get(albumpos).getPhotos().get(photopos).getPTag();
         } else {
             personList = albumList.get(albumpos).getPhotos().get(photopos).getPTag();
         }
-        if (locationList == null) {
+
+        if (locationList == null && albumList.get(albumpos).getPhotos().get(photopos).getLTag() == null) {
             locationList = new ArrayList<String>();
             locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
         } else {
             locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
         }
 
+        Log.w("test", String.valueOf(locationList == null));
 
-        Log.w("test", "hello world");
+        person = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, personList);
+        pTag.setAdapter(person);
+
+        location = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locationList);
+        lTag.setAdapter(location);
+
+
+        pTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ptagPositionDel = position;
+            }
+        });
+
+        lTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ltagPositionDel = position;
+            }
+        });
+
     }
 
 
     public void goBackPhoto(View view) {
-        if(photopos>0)
-    {
-        photopos=photopos-1;
+        if (photopos > 0) {
+            photopos = photopos - 1;
 
         }
         setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());
@@ -153,39 +172,18 @@ public class OpenPhoto extends AppCompatActivity {
     }
 
     public void goToNextPhoto(View view) {
-        if(photopos<albumList.get(albumpos).getPhotos().size()-1)
-        {
-            photopos=photopos+1;
+        if (photopos < albumList.get(albumpos).getPhotos().size() - 1) {
+            photopos = photopos + 1;
 
         }
         setTitle(albumList.get(albumpos).getPhotos().get(photopos).getName());
         map = StringToBitMap(albumList.get(albumpos).getPhotos().get(photopos).getPhotoString());
         imageview.setImageBitmap(map);
     }
-    public void insertTag(View view)
-    {
 
-        if(!ptagInput.getText().toString().trim().equals("")) {
-            albumList.get(albumpos).getPhotos().get(photopos).addPTag(ptagInput.getText().toString().trim());
-            personList = albumList.get(albumpos).getPhotos().get(photopos).getPTag();
-            person = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, personList);
-            person.notifyDataSetChanged();
-            pTag.setAdapter(person);
-            ptagInput.getText().clear();
-        }
+    public void insertTag(View view) {
 
-        if(!ltagInput.getText().toString().trim().equals("")) {
-            albumList.get(albumpos).getPhotos().get(photopos).addLTag(ltagInput.getText().toString().trim());
-            locationList = albumList.get(albumpos).getPhotos().get(photopos).getLTag();
-            location = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, locationList);
-            location.notifyDataSetChanged();
-            lTag.setAdapter(location);
-            ltagInput.getText().clear();
-        }
-
-        if (ptagInput.getText().toString().trim().equals("") && ltagInput.getText().toString().trim().equals(""))
-        {
-            Log.w("test","hello world");
+        if (ptagInput.getText().toString().trim().equals("") && ltagInput.getText().toString().trim().equals("")) {
             Context context = getApplicationContext();
             CharSequence text = "Enter valid input";
             int duration = Toast.LENGTH_SHORT;
@@ -193,57 +191,99 @@ public class OpenPhoto extends AppCompatActivity {
             toast.show();
         }
 
-        pTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = (String) pTag.getItemAtPosition(position);
-                deleteTag(item);
-            }
-        });
-        lTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = (String) lTag.getItemAtPosition(position);
-                deleteLocationTag(item);
-            }
-        });
-        Log.w("test", String.valueOf(pTag));
-        Log.w("test", String.valueOf(lTag));
+        if (!ptagInput.getText().toString().trim().equals("")) {
+            personList.add(ptagInput.getText().toString().trim());
+            person.notifyDataSetChanged();
+            ptagInput.getText().clear();
+
+            SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = mPrefs.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(albumList);
+            prefsEditor.putString("albumList", json);
+            prefsEditor.commit();
+            create(OpenPhoto.this, "storage.json", json);
+        }
+
+        if (!ltagInput.getText().toString().trim().equals("")) {
+            locationList.add(ltagInput.getText().toString().trim());
+            location.notifyDataSetChanged();
+            ltagInput.getText().clear();
+
+            SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = mPrefs.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(albumList);
+            prefsEditor.putString("albumList", json);
+            prefsEditor.commit();
+            create(OpenPhoto.this, "storage.json", json);
+        }
+
 
     }
-    public void deleteTag(String tag)
-    {
 
-        deletePerson.setOnClickListener(v -> {
-            AlertDialog.Builder adb=new AlertDialog.Builder(OpenPhoto.this);
+    public void deletePTag(View v) {
+        if (personList.size() == 0) {
+            Context context = getApplicationContext();
+            CharSequence text = "There is nothing to delete";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        } else {
+            AlertDialog.Builder adb = new AlertDialog.Builder(OpenPhoto.this);
+            String tag = personList.get(ptagPositionDel);
             adb.setTitle("Delete?");
             adb.setMessage("Are you sure you want to delete " + tag);
-            final int positionToRemove = personList.indexOf(tag);
             adb.setNegativeButton("Cancel", null);
             adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    personList.remove(positionToRemove);
+                    personList.remove(ptagPositionDel);
                     person.notifyDataSetChanged();
-                }});
-            adb.show();
-        });
-    }
-    public void deleteLocationTag(String tag)
-    {
 
-        deleteLocation.setOnClickListener(v -> {
-            AlertDialog.Builder adb=new AlertDialog.Builder(OpenPhoto.this);
+                    SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(albumList);
+                    prefsEditor.putString("albumList", json);
+                    prefsEditor.commit();
+                    create(OpenPhoto.this, "storage.json", json);
+                }
+            });
+            adb.show();
+        }
+
+    }
+
+    public void deleteLTag(View v) {
+        if (locationList.size() == 0) {
+            Context context = getApplicationContext();
+            CharSequence text = "There is nothing to delete";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        } else {
+            AlertDialog.Builder adb = new AlertDialog.Builder(OpenPhoto.this);
+            String tag = locationList.get(ltagPositionDel);
             adb.setTitle("Delete?");
             adb.setMessage("Are you sure you want to delete " + tag);
-            final int positionToRemove = locationList.indexOf(tag);
             adb.setNegativeButton("Cancel", null);
             adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    locationList.remove(positionToRemove);
+                    locationList.remove(ltagPositionDel);
                     location.notifyDataSetChanged();
-                }});
+
+                    SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(albumList);
+                    prefsEditor.putString("albumList", json);
+                    prefsEditor.commit();
+                    create(OpenPhoto.this, "storage.json", json);
+                }
+            });
             adb.show();
-        });
+        }
+
     }
 
     public String BitMapToString(Bitmap bitmap) {
@@ -266,8 +306,6 @@ public class OpenPhoto extends AppCompatActivity {
     }
 
 
-
-
     private boolean create(Context context, String fileName, String jsonString) {
         String FILENAME = "storage.json";
         try {
@@ -284,6 +322,7 @@ public class OpenPhoto extends AppCompatActivity {
         }
 
     }
+
     private String read(Context context, String fileName) {
         try {
             FileInputStream fis = context.openFileInput(fileName);

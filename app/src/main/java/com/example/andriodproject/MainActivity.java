@@ -49,6 +49,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -112,33 +113,6 @@ public class MainActivity extends AppCompatActivity {
 
         itemTouchHelper.attachToRecyclerView(recAlbumList);
 
-
-//        albumList.get(0).getPhotos().get(0).addPTag("Bola");
-//        albumList.get(1).getPhotos().get(0).addPTag("Test");
-//
-//        albumList.get(0).getPhotos().get(0).addLTag("New York");
-//        albumList.get(1).getPhotos().get(0).addLTag("New Jersey");
-
-
-//        for (int i = 0; i < albumList.size(); i++) {
-//            for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
-//                autoCom.addAll(albumList.get(i).getPhotos().get(j).getlTag());
-//                autoCom.addAll(albumList.get(i).getPhotos().get(j).getPTag());
-//
-//            }
-//        }
-
-//        View mView = getLayoutInflater().inflate(R.layout.search_alert, null);
-//
-//        AutoCompleteTextView tagValue = (AutoCompleteTextView) mView.findViewById(R.id.tagValue);
-//
-//
-//        autoComAdapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_dropdown_item_1line, autoCom);
-//
-//
-//        tagValue.setAdapter(autoComAdapter);
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -199,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Context context = getApplicationContext();
-                CharSequence text = "The Photo will not be moved";
+                CharSequence text = "The search is canceled";
                 int duration = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
@@ -219,16 +193,20 @@ public class MainActivity extends AppCompatActivity {
         if (type.equals("Person")) {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
-                    if (albumList.get(i).getPhotos().get(j).getPTag().contains(val)) {
-                        searchResults.add(albumList.get(i).getPhotos().get(j));
+                    if (albumList.get(i).getPhotos().get(j).getPTag() != null) {
+                        if (albumList.get(i).getPhotos().get(j).getPTag().contains(val)) {
+                            searchResults.add(albumList.get(i).getPhotos().get(j));
+                        }
                     }
                 }
             }
         } else {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
-                    if (albumList.get(i).getPhotos().get(j).getLTag().contains(val)) {
-                        searchResults.add(albumList.get(i).getPhotos().get(j));
+                    if (albumList.get(i).getPhotos().get(j).getLTag() != null) {
+                        if (albumList.get(i).getPhotos().get(j).getLTag().contains(val)) {
+                            searchResults.add(albumList.get(i).getPhotos().get(j));
+                        }
                     }
                 }
             }
@@ -262,17 +240,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void autoComFill(int position) {
         autoCom.clear();
-        Log.w("test", String.valueOf(position));
         if (position == 0) {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
-                    autoCom.addAll(albumList.get(i).getPhotos().get(j).getPTag());
+                    if (albumList.get(i).getPhotos().get(j).getPTag() != null) {
+                        autoCom.addAll(albumList.get(i).getPhotos().get(j).getPTag());
+                        autoCom = (ArrayList<String>) autoCom.stream()
+                                .distinct()
+                                .collect(Collectors.toList());
+                    }
                 }
             }
         } else {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
-                    autoCom.addAll(albumList.get(i).getPhotos().get(j).getLTag());
+                    if (albumList.get(i).getPhotos().get(j).getLTag() != null) {
+                        autoCom.addAll(albumList.get(i).getPhotos().get(j).getLTag());
+                        autoCom = (ArrayList<String>) autoCom.stream()
+                                .distinct()
+                                .collect(Collectors.toList());
+                    }
                 }
             }
         }
