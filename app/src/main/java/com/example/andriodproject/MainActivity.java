@@ -48,6 +48,7 @@ import java.lang.reflect.Type;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -150,10 +151,7 @@ public class MainActivity extends AppCompatActivity {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
                 autoComFill(position);
-
-
                 tagValue.setAdapter(autoComAdapter);
             }
 
@@ -194,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
                     if (albumList.get(i).getPhotos().get(j).getPTag() != null) {
-                        if (albumList.get(i).getPhotos().get(j).getPTag().contains(val)) {
+                        if (albumList.get(i).getPhotos().get(j).getPTag().stream().anyMatch(val::equalsIgnoreCase)) {
                             searchResults.add(albumList.get(i).getPhotos().get(j));
                         }
                     }
@@ -204,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < albumList.size(); i++) {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
                     if (albumList.get(i).getPhotos().get(j).getLTag() != null) {
-                        if (albumList.get(i).getPhotos().get(j).getLTag().contains(val)) {
+                        if (albumList.get(i).getPhotos().get(j).getLTag().stream().anyMatch(val::equalsIgnoreCase)) {
                             searchResults.add(albumList.get(i).getPhotos().get(j));
                         }
                     }
@@ -245,9 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
                     if (albumList.get(i).getPhotos().get(j).getPTag() != null) {
                         autoCom.addAll(albumList.get(i).getPhotos().get(j).getPTag());
-                        autoCom = (ArrayList<String>) autoCom.stream()
-                                .distinct()
-                                .collect(Collectors.toList());
+                        autoCom = (ArrayList<String>) removeDuplicates(autoCom);
                     }
                 }
             }
@@ -256,9 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int j = 0; j < albumList.get(i).getPhotos().size(); j++) {
                     if (albumList.get(i).getPhotos().get(j).getLTag() != null) {
                         autoCom.addAll(albumList.get(i).getPhotos().get(j).getLTag());
-                        autoCom = (ArrayList<String>) autoCom.stream()
-                                .distinct()
-                                .collect(Collectors.toList());
+                        autoCom = (ArrayList<String>) removeDuplicates(autoCom);
                     }
                 }
             }
@@ -564,6 +558,10 @@ public class MainActivity extends AppCompatActivity {
             e.getMessage();
             return null;
         }
+    }
+
+    public static List<String> removeDuplicates(List<String> strList) {
+        return new ArrayList<>(strList.stream().collect(Collectors.toMap(String::toLowerCase, str -> str, (prev, next) -> next, LinkedHashMap::new)).values());
     }
 
 
